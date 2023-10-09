@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-service-deployment 
+  namespace: vaccination-system-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      vms: frontend
+  template:
+    metadata:
+      labels:
+        vms: frontend
+    spec:
+      containers:
+        - name: frontend-service-pod
+          image: ${ECR_REGISTRY_URI}:${IMAGE_TAG}
+          imagePullPolicy: Always
+          env:
+            - name: AUTH_SERVICE_BASE_URL
+              value: 'http://auth-service:8002/api'
+          ports:
+            - containerPort: 3000
+          resources:
+            limits:
+              cpu: 300m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 250Mi
